@@ -5,55 +5,9 @@ inputs:
     required: true
   IMAGE_NAME:
     required: true 
-#Frontend build push
-#runs: ubuntu-latest
-#
-#  steps:
-#  - name: Checkout code
-#    uses: actions/checkout@v2
-#    
-#  - name: Docker meta
-#    id: meta
-#    uses: docker/metadata-action@v3
-#    with:
-#      images: ${{ secrets.IMAGE_REPOSITORY }}/${{inputs.image_name}}
-#      tags: |
-#        type=ref,event=branch
-#        type=ref,event=pr
-#        type=semver,pattern={{version}}
-#        type=semver,pattern={{major}}.{{minor}}
-#        type=sha
-#
-#  - name: Set up Docker Buildx
-#    id: buildx
-#    uses: docker/setup-buildx-action@v1
-#
-#  - name: Login to GCR
-#    uses: docker/login-action@v1
-#    with:
-#      registry: europe-west1-docker.pkg.dev
-#      username: _json_key
-#      password: ${{ secrets.GCR_JSON_KEY }}
-#
-#  - name: Build image and push to Docker Hub and GitHub Container Registry
-#    uses: docker/build-push-action@v2
-#    id: docker_build_push
-#    with:
-#      context: frontend
-#      tags: ${{ steps.meta.outputs.tags }}
-#      push: true
-#      #cache-from: type=registry,ref=${{ secrets.IMAGE_REPOSITORY }}/${{inputs.image_name}}:${{ github.ref_name }}
-#      ## Registry cache does not work with GCR
-#      cache-from: type=registry,ref=${{ secrets.IMAGE_REPOSITORY }}/${{inputs.image_name}}:buildcache
-#      cache-to: type=registry,ref=${{ secrets.IMAGE_REPOSITORY }}/${{inputs.image_name}}:buildcache
-#
-#  - name: Image digest
-#    run: echo ${{ steps.docker_build_push.outputs.digest }}
 
-
-#Wordpress build push      
-runs: ubuntu-latest
-
+runs:
+  using: "composite"
   steps:
   - name: Checkout code
     uses: actions/checkout@v2
@@ -62,7 +16,7 @@ runs: ubuntu-latest
     id: meta
     uses: docker/metadata-action@v3
     with:
-      images: ${{ secrets.IMAGE_REPOSITORY }}/${{inputs.image_name}}
+      images: ${{ secrets.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}
       tags: |
         type=ref,event=branch
         type=ref,event=pr
@@ -85,13 +39,13 @@ runs: ubuntu-latest
     uses: docker/build-push-action@v2
     id: docker_build_push
     with:
-      context: wordpress
+      context: ${{inputs.BUILD_CONTEXT}} 
       tags: ${{ steps.meta.outputs.tags }}
       push: true
-      #cache-from: type=registry,ref=${{ secrets.IMAGE_REPOSITORY }}/${{inputs.image_name}}:${{ github.ref_name }}
+      #cache-from: type=registry,ref=${{ secrets.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:${{ github.ref_name }}
       ## Registry cache does not work with GCR
-      cache-from: type=registry,ref=${{ secrets.IMAGE_REPOSITORY }}/${{inputs.image_name}}:buildcache
-      cache-to: type=registry,ref=${{ secrets.IMAGE_REPOSITORY }}/${{inputs.image_name}}:buildcache
+      cache-from: type=registry,ref=${{ secrets.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
+      cache-to: type=registry,ref=${{ secrets.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
 
   - name: Image digest
     run: echo ${{ steps.docker_build_push.outputs.digest }}
