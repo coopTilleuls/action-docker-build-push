@@ -1,7 +1,10 @@
 inputs:
   IMAGE_REPOSITORY:
     required: true
-
+  BUILD_CONTEXT:
+    required: true
+  IMAGE_NAME:
+    required: true 
 #Frontend build push
 #runs: ubuntu-latest
 #
@@ -13,7 +16,7 @@ inputs:
 #    id: meta
 #    uses: docker/metadata-action@v3
 #    with:
-#      images: ${{ secrets.IMAGE_REPOSITORY }}/frontend
+#      images: ${{ secrets.IMAGE_REPOSITORY }}/${{inputs.image_name}}
 #      tags: |
 #        type=ref,event=branch
 #        type=ref,event=pr
@@ -39,10 +42,10 @@ inputs:
 #      context: frontend
 #      tags: ${{ steps.meta.outputs.tags }}
 #      push: true
-#      #cache-from: type=registry,ref=${{ secrets.IMAGE_REPOSITORY }}/frontend:${{ github.ref_name }}
+#      #cache-from: type=registry,ref=${{ secrets.IMAGE_REPOSITORY }}/${{inputs.image_name}}:${{ github.ref_name }}
 #      ## Registry cache does not work with GCR
-#      cache-from: type=registry,ref=${{ secrets.IMAGE_REPOSITORY }}/frontend:buildcache
-#      cache-to: type=registry,ref=${{ secrets.IMAGE_REPOSITORY }}/frontend:buildcache
+#      cache-from: type=registry,ref=${{ secrets.IMAGE_REPOSITORY }}/${{inputs.image_name}}:buildcache
+#      cache-to: type=registry,ref=${{ secrets.IMAGE_REPOSITORY }}/${{inputs.image_name}}:buildcache
 #
 #  - name: Image digest
 #    run: echo ${{ steps.docker_build_push.outputs.digest }}
@@ -59,7 +62,7 @@ runs: ubuntu-latest
     id: meta
     uses: docker/metadata-action@v3
     with:
-      images: ${{ secrets.IMAGE_REPOSITORY }}/wordpress
+      images: ${{ secrets.IMAGE_REPOSITORY }}/${{inputs.image_name}}
       tags: |
         type=ref,event=branch
         type=ref,event=pr
@@ -85,10 +88,10 @@ runs: ubuntu-latest
       context: wordpress
       tags: ${{ steps.meta.outputs.tags }}
       push: true
-      #cache-from: type=registry,ref=${{ secrets.IMAGE_REPOSITORY }}/wordpress:${{ github.ref_name }}
+      #cache-from: type=registry,ref=${{ secrets.IMAGE_REPOSITORY }}/${{inputs.image_name}}:${{ github.ref_name }}
       ## Registry cache does not work with GCR
-      cache-from: type=registry,ref=${{ secrets.IMAGE_REPOSITORY }}/wordpress:buildcache
-      cache-to: type=registry,ref=${{ secrets.IMAGE_REPOSITORY }}/wordpress:buildcache
+      cache-from: type=registry,ref=${{ secrets.IMAGE_REPOSITORY }}/${{inputs.image_name}}:buildcache
+      cache-to: type=registry,ref=${{ secrets.IMAGE_REPOSITORY }}/${{inputs.image_name}}:buildcache
 
   - name: Image digest
     run: echo ${{ steps.docker_build_push.outputs.digest }}
