@@ -48,4 +48,5 @@ runs:
       cache-to: type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
 
   - name: Image digest
+    shell: bash
     run: echo ${{ steps.docker_build_push.outputs.digest }}
