@@ -3,6 +3,9 @@ inputs:
     required: true
   BUILD_CONTEXT:
     required: true
+  BUILD_TARGET:
+    description: "Sets the target stage to build"
+    required: false
   IMAGE_NAME:
     required: true
   GCR_JSON_KEY:
@@ -43,6 +46,7 @@ runs:
     with:
       context: ${{inputs.BUILD_CONTEXT}} 
       tags: ${{ steps.meta.outputs.tags }}
+      target: ${{ inputs.BUILD_TARGET }}
       push: true
       cache-from: type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
       cache-to: type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
