@@ -54,6 +54,10 @@ runs:
       cache-from: type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
       cache-to: type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
 
+  - name: create empty .trivyignore if file is missing
+    shell: bash
+    run: touch .trivyignore
+
   - name: Run Trivy vulnerability scanner
     if: ${{ inputs.SECURITY_SCAN }} 
     uses: aquasecurity/trivy-action@master
