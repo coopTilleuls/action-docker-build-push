@@ -54,10 +54,6 @@ runs:
       cache-from: type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
       cache-to: type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
 
-  - name: docker images
-    shell: bash
-    run: docker images
-
   - name: Run Trivy vulnerability scanner
     if: ${{ inputs.SECURITY_SCAN }} 
     uses: aquasecurity/trivy-action@master
@@ -68,6 +64,7 @@ runs:
       ignore-unfixed: true
       vuln-type: 'os,library'
       severity: 'CRITICAL,HIGH'
+      trivyignores: .trivyignore
 
   - name: Build image and push to Docker Hub and GitHub Container Registry
     uses: docker/build-push-action@v2
