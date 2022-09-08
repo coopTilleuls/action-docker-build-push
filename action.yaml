@@ -49,6 +49,7 @@ runs:
     with:
       context: ${{inputs.BUILD_CONTEXT}}
       tags: local
+      pull: true
       target: ${{ inputs.BUILD_TARGET }}
       load: true
       cache-from: type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
@@ -78,6 +79,7 @@ runs:
       tags: ${{ steps.meta.outputs.tags }}
       target: ${{ inputs.BUILD_TARGET }}
       push: true
+      pull: true
       cache-from: type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
       cache-to: type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
 
