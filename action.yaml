@@ -24,7 +24,7 @@ runs:
       if [ -z "${{inputs.BUILD_CONTEXT}}" ]; then echo "inputs.BUILD_CONTEXT is missing"; exit=1; fi
       if [ -z "${{inputs.IMAGE_NAME}}" ]; then echo "inputs.IMAGE_NAME is missing"; exit=1; fi
       if [ -z "${{inputs.REGISTRY_JSON_KEY}}" ]; then echo "inputs.REGISTRY_JSON_KEY is missing"; exit=1; fi
-      if [ $exit -ne 0 ]; then exit 1; fi
+      if [ -n "$exit" ]; then exit 1; fi
 
   - name: Checkout code
     uses: actions/checkout@v2
