@@ -70,7 +70,7 @@ runs:
     run: touch .trivyignore
 
   - name: Run Trivy vulnerability scanner
-    if: ${{ inputs.SECURITY_SCAN == true }}
+    if: ${{ inputs.SECURITY_SCAN }}
     uses: aquasecurity/trivy-action@master
     with:
       image-ref: local
