@@ -6,6 +6,9 @@ inputs:
   BUILD_TARGET:
     description: "Sets the target stage to build"
     required: false
+  BUILD_ARG:
+    description: "Set build arg for container"
+    required: false
   IMAGE_NAME:
     required: true
   REGISTRY_JSON_KEY:
@@ -53,7 +56,7 @@ runs:
       password: ${{ inputs.REGISTRY_JSON_KEY }}
     
   - name: Build image localy first
-    uses: docker/build-push-action@v2
+    uses: docker/build-push-action@v4
     id: docker_build
     with:
       context: ${{inputs.BUILD_CONTEXT}}
@@ -63,6 +66,7 @@ runs:
       load: true
       cache-from: type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
       cache-to: type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
+      build-args: ${{ inputs.BUILD_ARGS }}
 
   - name: create empty .trivyignore if file is missing
     shell: bash
