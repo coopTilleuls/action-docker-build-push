@@ -11,8 +11,8 @@ inputs:
   REGISTRY_JSON_KEY:
     required: true
   SECURITY_SCAN:
-    type: boolean
-    default: true
+    type: "boolean"
+    default: 'true'
 
 runs:
   using: "composite"
@@ -52,8 +52,12 @@ runs:
       registry: ${{ inputs.IMAGE_REPOSITORY }}
       username: _json_key
       password: ${{ inputs.REGISTRY_JSON_KEY }}
-    
+
+  # Only if SECURITY_SCAN :
+  # build and pull result
+  # scan
   - name: Build image localy first
+    if: inputs.SECURITY_SCAN == 'true'
     uses: docker/build-push-action@v2
     id: docker_build
     with:
@@ -66,11 +70,12 @@ runs:
       cache-to: type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
 
   - name: create empty .trivyignore if file is missing
+    if: inputs.SECURITY_SCAN == 'true'
     shell: bash
     run: touch .trivyignore
 
   - name: Run Trivy vulnerability scanner
-    if: ${{ inputs.SECURITY_SCAN }}
+    if: inputs.SECURITY_SCAN == 'true'
     uses: aquasecurity/trivy-action@master
     with:
       image-ref: local
@@ -81,6 +86,7 @@ runs:
       severity: 'CRITICAL,HIGH'
       trivyignores: .trivyignore
 
+  # if SECURITY_SCAN was done, image is already build, else we build it now
   - name: Build image and push to registry
     uses: docker/build-push-action@v2
     id: docker_build_push
@@ -89,7 +95,6 @@ runs:
       tags: ${{ steps.meta.outputs.tags }}
       target: ${{ inputs.BUILD_TARGET }}
       push: true
-      pull: true
       cache-from: type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
       cache-to: type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
 
