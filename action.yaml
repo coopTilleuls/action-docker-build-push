@@ -11,8 +11,11 @@ inputs:
   REGISTRY_JSON_KEY:
     required: true
   SECURITY_SCAN:
-    type: "boolean"
-    default: 'true'
+    type: boolean
+    default: true
+  BUILD_ARGS:
+    description: All build args 
+    required: false
 
 runs:
   using: "composite"
@@ -64,6 +67,7 @@ runs:
       context: ${{inputs.BUILD_CONTEXT}}
       tags: local
       pull: true
+      build-args: ${{ inputs.BUILD_ARGS }}
       target: ${{ inputs.BUILD_TARGET }}
       load: true
       cache-from: type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
