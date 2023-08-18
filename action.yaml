@@ -70,8 +70,13 @@ runs:
       build-args: ${{ inputs.BUILD_ARGS }}
       target: ${{ inputs.BUILD_TARGET }}
       load: true
-      cache-from: type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
-      cache-to: type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
+      cache-from: |
+        type=gha,scope=${{github.ref}}
+        type=gha,scope=refs/heads/main
+        type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
+      cache-to: |
+        type=gha,scope=${{github.ref}},mode=max
+        type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
 
   - name: create empty .trivyignore if file is missing
     if: inputs.SECURITY_SCAN == 'true'
@@ -99,8 +104,13 @@ runs:
       tags: ${{ steps.meta.outputs.tags }}
       target: ${{ inputs.BUILD_TARGET }}
       push: true
-      cache-from: type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
-      cache-to: type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
+      cache-from: |
+        type=gha,scope=${{github.ref}}
+        type=gha,scope=refs/heads/main
+        type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
+      cache-to: |
+        type=gha,scope=${{github.ref}},mode=max
+        type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
 
   - name: Image digest
     shell: bash
