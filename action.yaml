@@ -11,11 +11,15 @@ inputs:
   REGISTRY_JSON_KEY:
     required: true
   SECURITY_SCAN:
-    type: boolean
-    default: true
+    type: "boolean"
+    default: "true"
   BUILD_ARGS:
     description: All build args 
     required: false
+  SKIP_CHECKOUT:
+    description: "Allows to skip checkout to generate Dockerfile manually"
+    type: "boolean"
+    default: "false"
 
 runs:
   using: "composite"
@@ -30,8 +34,9 @@ runs:
       if [ -n "$exit" ]; then exit 1; fi
 
   - name: Checkout code
+    if: inputs.SKIP_CHECKOUT == 'false'
     uses: actions/checkout@v3.5.2
-    
+
   - name: Docker meta
     id: meta
     uses: docker/metadata-action@v3
@@ -88,11 +93,11 @@ runs:
     uses: aquasecurity/trivy-action@master
     with:
       image-ref: local
-      format: 'table'
-      exit-code: '1'
+      format: "table"
+      exit-code: "1"
       ignore-unfixed: true
-      vuln-type: 'os,library'
-      severity: 'CRITICAL,HIGH'
+      vuln-type: "os,library"
+      severity: "CRITICAL,HIGH"
       trivyignores: .trivyignore
 
   # if SECURITY_SCAN was done, image is already build, else we build it now
@@ -100,7 +105,7 @@ runs:
     uses: docker/build-push-action@v4.0.0
     id: docker_build_push
     with:
-      context: ${{inputs.BUILD_CONTEXT}} 
+      context: ${{inputs.BUILD_CONTEXT}}
       tags: ${{ steps.meta.outputs.tags }}
       target: ${{ inputs.BUILD_TARGET }}
       push: true
