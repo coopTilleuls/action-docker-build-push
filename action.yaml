@@ -78,10 +78,8 @@ runs:
       cache-from: |
         type=gha,scope=${{github.ref}}
         type=gha,scope=refs/heads/main
-        type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
       cache-to: |
         type=gha,scope=${{github.ref}},mode=max
-        type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
 
   - name: create empty .trivyignore if file is missing
     if: inputs.SECURITY_SCAN == 'true'
@@ -112,10 +110,8 @@ runs:
       cache-from: |
         type=gha,scope=${{github.ref}}
         type=gha,scope=refs/heads/main
-        type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
       cache-to: |
         type=gha,scope=${{github.ref}},mode=max
-        type=registry,ref=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}:buildcache
 
   - name: Image digest
     shell: bash
