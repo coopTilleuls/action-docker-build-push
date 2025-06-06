@@ -97,7 +97,8 @@ runs:
       vuln-type: "library"
       severity: "CRITICAL,HIGH"
       trivyignores: .trivyignore
-  - if: failure()
+  - name: trivy_failure
+    if: failure()
       run: echo "### Trivy found vulnerabilities ! :bug:\n Check [this document](https://github.com/coopTilleuls/SRE/blob/main/process_cicd_trivy_scan.md) to see how to fix it" >> $GITHUB_STEP_SUMMARY
 
   # if SECURITY_SCAN was done, image is already build, else we build it now
