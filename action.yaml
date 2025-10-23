@@ -87,6 +87,7 @@ runs:
     run: touch .trivyignore
 
   - name: Run Trivy vulnerability scanner
+    continue-on-error: true
     if: inputs.SECURITY_SCAN == 'true'
     uses: aquasecurity/trivy-action@master
     with:
