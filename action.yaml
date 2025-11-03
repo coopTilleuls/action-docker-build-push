@@ -20,6 +20,10 @@ inputs:
     description: "Allows to skip checkout to generate Dockerfile manually"
     type: "boolean"
     default: "false"
+  CUSTOM_TAG:
+    description: "add custom tag"
+    type: "string"
+    default: ""
 
 runs:
   using: "composite"
@@ -49,7 +53,7 @@ runs:
         type=semver,pattern={{version}}
         type=semver,pattern={{major}}.{{minor}}
         type=sha
-
+        type=raw,value=${{ env.CUSTOM_TAG }} ,enable={{ env.CUSTOM_TAG != "" }}
   - name: Set up Docker Buildx
     id: buildx
     uses: docker/setup-buildx-action@v3.0.0
