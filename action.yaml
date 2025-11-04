@@ -55,7 +55,9 @@ runs:
         type=sha
         type=raw,value=${{ inputs.CUSTOM_TAG }},enable={{ inputs.CUSTOM_TAG != "" }}
   - name:  add_custom_tags
-    run:  echo ${{ steps.meta.outputs.tags }}
+    shell: bash
+    run: |
+      echo ${{ steps.meta.outputs.tags }}
 
   - name:  add_custom_tags
   - name: Set up Docker Buildx
