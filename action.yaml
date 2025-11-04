@@ -53,7 +53,6 @@ runs:
         type=semver,pattern={{version}}
         type=semver,pattern={{major}}.{{minor}}
         type=sha
-        type=raw,value=${{ inputs.CUSTOM_TAG }},enable={{ inputs.CUSTOM_TAG != "" }}
   - name: debug
     shell: bash
     run: echo ${{ steps.meta.outputs.tags }}
