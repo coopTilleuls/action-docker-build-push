@@ -54,6 +54,9 @@ runs:
         type=semver,pattern={{major}}.{{minor}}
         type=sha
 
+  - name: debug
+    shell: bash
+    run: echo ${{ steps.meta.outputs.tags }}
   - name: Set up Docker Buildx
     id: buildx
     uses: docker/setup-buildx-action@v3.0.0
