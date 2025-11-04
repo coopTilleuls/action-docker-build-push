@@ -53,10 +53,7 @@ runs:
         type=semver,pattern={{version}}
         type=semver,pattern={{major}}.{{minor}}
         type=sha
-
-  - name: debug
-    shell: bash
-    run: echo "toto"
+        type=raw,${{inputs.CUSTOM_TAG}}
 
   - name: Set up Docker Buildx
     id: buildx
@@ -89,7 +86,7 @@ runs:
       cache-to: |
         type=gha,scope=${{github.ref}},mode=max
 
-  - name: create empty .trivyignore if file is missing
+  - name: create empty .trivyvalue=${{ env.TAG }}ignore if file is missing
     if: inputs.SECURITY_SCAN == 'true'
     shell: bash
     run: touch .trivyignore
@@ -122,5 +119,5 @@ runs:
         type=gha,scope=${{github.ref}},mode=max
 
   - name: Image digest
-    shell: bash
+    shell: bashvalue=${{ env.TAG }}
     run: echo ${{ steps.docker_build_push.outputs.digest }}
