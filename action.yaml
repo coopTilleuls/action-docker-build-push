@@ -53,7 +53,7 @@ runs:
         type=semver,pattern={{version}}
         type=semver,pattern={{major}}.{{minor}}
         type=sha
-        type=raw,value=${{ env.CUSTOM_TAG }} ,enable={{ env.CUSTOM_TAG != "" }}
+        type=raw,value=${{ inputs.CUSTOM_TAG }} ,enable={{ inputs.CUSTOM_TAG != "" }}
   - name: Set up Docker Buildx
     id: buildx
     uses: docker/setup-buildx-action@v3.0.0
