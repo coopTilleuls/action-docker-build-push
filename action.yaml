@@ -110,6 +110,7 @@ runs:
     with:
       context: ${{inputs.BUILD_CONTEXT}}
       tags: ${{ steps.meta.outputs.tags }}
+      build-args: ${{ inputs.BUILD_ARGS }}
       target: ${{ inputs.BUILD_TARGET }}
       push: true
       cache-from: |
