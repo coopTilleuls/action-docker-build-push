@@ -41,19 +41,21 @@ runs:
     if: inputs.SKIP_CHECKOUT == 'false'
     uses: actions/checkout@v3.5.2
 
+  - name: build_custom_tags
+    id: build_custom_tags
+    shell: bash
+    run: |
+      DEFAULT_TAGS="type=ref,event=branch\ntype=ref,event=pr\ntype=ref,event=tag\ntype=semver,pattern={{version}}\ntype=semver,pattern={{major}}.{{minor}}\ntype=sha"
+      ALL_TAGS="DEFAULT_TAGS\n${CUSTOM_TAGS}"
+      echo "tags=$ALL_TAGS" >> $GITUB_OUTPUT
+
   - name: Docker meta
     id: meta
     uses: docker/metadata-action@v5.8.0
     with:
       images: ${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}
-      tags: |
-        type=ref,event=branch
-        type=ref,event=pr
-        type=ref,event=tag
-        type=semver,pattern={{version}}
-        type=semver,pattern={{major}}.{{minor}}
-        type=sha
-        $(echo -e ${{inputs.CUSTOM_TAGS}} )
+      tags: ${{ steps.build_custom_tags.outputs.tags }}
+
 
   - name: Set up Docker Buildx
     id: buildx
