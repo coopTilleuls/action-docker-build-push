@@ -71,7 +71,7 @@ runs:
   # scan
   - name: Build image localy first
     if: inputs.SECURITY_SCAN == 'true'
-    uses: docker/build-push-action@v5.0.0
+    uses: docker/build-push-action@v6
     id: docker_build
     with:
       context: ${{inputs.BUILD_CONTEXT}}
@@ -105,10 +105,10 @@ runs:
 
   # if SECURITY_SCAN was done, image is already build, else we build it now
   - name: Build image and push to registry
-    uses: docker/build-push-action@v5.0.0
+    uses: docker/build-push-action@v6
     id: docker_build_push
     env:
-      DOCKER_BUILD_SUMMARY: false
+      DOCKER_BUILD_SUMMARY: true
     with:
       context: ${{inputs.BUILD_CONTEXT}}
       tags: ${{ steps.meta.outputs.tags }}
@@ -122,5 +122,5 @@ runs:
         type=gha,scope=${{github.ref}},mode=max
 
   - name: Image digest
-    shell: bashvalue=${{ env.TAG }}
+    shell: bash
     run: echo ${{ steps.docker_build_push.outputs.digest }}
