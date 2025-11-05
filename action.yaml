@@ -47,7 +47,7 @@ runs:
     run: |
       DEFAULT_TAGS="type=ref,event=branch\ntype=ref,event=pr\ntype=ref,event=tag\ntype=semver,pattern={{version}}\ntype=semver,pattern={{major}}.{{minor}}\ntype=sha"
       ALL_TAGS="DEFAULT_TAGS\n${CUSTOM_TAGS}"
-      echo "tags=$ALL_TAGS" >> $GITUB_OUTPUT
+      echo "tags=$ALL_TAGS" >> "$GITHUB_OUTPUT"
 
   - name: Docker meta
     id: meta
