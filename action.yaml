@@ -53,7 +53,7 @@ runs:
         type=semver,pattern={{version}}
         type=semver,pattern={{major}}.{{minor}}
         type=sha
-        ${echo -e ${{inputs.CUSTOM_TAGS}} }
+        $(echo -e ${{inputs.CUSTOM_TAGS}} )
 
   - name: Set up Docker Buildx
     id: buildx
