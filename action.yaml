@@ -45,7 +45,7 @@ runs:
     id: build_custom_tags
     shell: bash
     run: |
-      DEFAULT_TAGS="type=ref,event=branch\ntype=ref,event=pr\ntype=ref,event=tag\ntype=semver,pattern={{version}}\ntype=semver,pattern={{major}}.{{minor}}\ntype=sha"
+      DEFAULT_TAGS="type=ref,event=branch;type=ref,event=pr;type=ref,event=tag;type=semver,pattern={{version}};type=semver,pattern={{major}}.{{minor}};type=sha"
       ALL_TAGS="${DEFAULT_TAGS}\n${CUSTOM_TAGS}"
       echo "tags=$ALL_TAGS" >> "$GITHUB_OUTPUT"
 
