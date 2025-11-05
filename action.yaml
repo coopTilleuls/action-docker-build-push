@@ -61,7 +61,7 @@ runs:
       defaut_tags=$(echo  '${{ toJSON(steps.meta.outputs) }}' | jq -r '.tags')
       repo=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}
       custom_images=$(echo ${{inputs.CUSTOM_TAGS}} | awk -vrepo=$repo 'BEGIN{RS=","; ORS=" "; printf " "}  /[a-z0-9]/{print repo":"$0}' )
-      all_in_one=$(echo ${defaut_tags}${custom_images} | sed -r  sed -r 's/\s/\\n/g')
+      all_in_one=$(echo ${defaut_tags}${custom_images} | sed -r 's/\s/\\n/g')
       echo "tags=${all_in_one}" >> "$GITHUB_OUTPUT"
       cat "$GITHUB_OUTPUT"
 
