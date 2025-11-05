@@ -60,13 +60,15 @@ runs:
     run: |
       defaut_tags=$(echo  '${{ toJSON(steps.meta.outputs) }}' | jq -r '.tags')
       repo=${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}
-      custom_images=$(echo ${{inputs.CUSTOM_TAGS}} | awk -vrepo=$repo 'BEGIN{RS=","; ORS=","; printf ","}  /[a-z0-9]/{print repo":"$0}' )
-      echo ${defaut_tags}${custom_images}
-      if [[ -z ${{inputs.CUSTOM_TAGS}} ]] ; then
-        echo "tags=${{ steps.meta.outputs.tags }}" >> "$GITHUB_OUTPUT"
-      else
-        echo "tags=${{ steps.meta.outputs.tags }}${custom_images}" >> "$GITHUB_OUTPUT"
-      fi
+      custom_images=$(echo ${{inputs.CUSTOM_TAGS}} | awk -vrepo=$repo 'BEGIN{RS=","; ORS=" "; printf " "}  /[a-z0-9]/{print repo":"$0}' )
+      echo "tags=${defaut_tags}${custom_images}" >> "$GITHUB_OUTPUT"
+      cat "$GITHUB_OUTPUT"
+
+      #if [[ -z ${{inputs.CUSTOM_TAGS}} ]] ; then
+      #  echo "tags=${{ steps.meta.outputs.tags }}" >> "$GITHUB_OUTPUT"
+      #else
+      #  echo "tags=${{ steps.meta.outputs.tags }}${custom_images}" >> "$GITHUB_OUTPUT"
+      #fi
       exit 1
 
   - name: Set up Docker Buildx
