@@ -20,6 +20,10 @@ inputs:
     description: "Allows to skip checkout to generate Dockerfile manually"
     type: "boolean"
     default: "false"
+  TAGS:
+    description: "Optional docker/metadata-action tag rules, one per line (e.g. 'type=raw,value=foo'). If empty, the default tag rules (branch/pr/tag ref, semver, sha) are used."
+    type: "string"
+    default: ""
 
 runs:
   using: "composite"
@@ -37,22 +41,38 @@ runs:
     if: inputs.SKIP_CHECKOUT == 'false'
     uses: actions/checkout@v3.5.2
 
+  - name: Resolve tag rules
+    id: tag_rules
+    shell: bash
+    env:
+      TAGS: ${{ inputs.TAGS }}
+    run: |
+      if [ -n "$TAGS" ]; then
+        rules="$TAGS"
+      else
+        rules='type=ref,event=branch
+      type=ref,event=pr
+      type=ref,event=tag
+      type=semver,pattern={{version}}
+      type=semver,pattern={{major}}.{{minor}}
+      type=sha'
+      fi
+      {
+        echo "rules<<TAG_RULES_EOF"
+        echo "$rules"
+        echo "TAG_RULES_EOF"
+      } >> "$GITHUB_OUTPUT"
+
   - name: Docker meta
     id: meta
-    uses: docker/metadata-action@v3
+    uses: docker/metadata-action@v5.8.0
     with:
       images: ${{ inputs.IMAGE_REPOSITORY }}/${{inputs.IMAGE_NAME}}
-      tags: |
-        type=ref,event=branch
-        type=ref,event=pr
-        type=ref,event=tag
-        type=semver,pattern={{version}}
-        type=semver,pattern={{major}}.{{minor}}
-        type=sha
+      tags: ${{ steps.tag_rules.outputs.rules }}
 
   - name: Set up Docker Buildx
     id: buildx
-    uses: docker/setup-buildx-action@v3.0.0
+    uses: docker/setup-buildx-action@v3.11.1
 
   - name: Login to registry
     uses: docker/login-action@v1
@@ -66,7 +86,7 @@ runs:
   # scan
   - name: Build image localy first
     if: inputs.SECURITY_SCAN == 'true'
-    uses: docker/build-push-action@v5.0.0
+    uses: docker/build-push-action@v6
     id: docker_build
     with:
       context: ${{inputs.BUILD_CONTEXT}}
@@ -104,11 +124,14 @@ runs:
 
   # if SECURITY_SCAN was done, image is already build, else we build it now
   - name: Build image and push to registry
-    uses: docker/build-push-action@v5.0.0
+    uses: docker/build-push-action@v6
     id: docker_build_push
+    env:
+      DOCKER_BUILD_SUMMARY: true
     with:
       context: ${{inputs.BUILD_CONTEXT}}
       tags: ${{ steps.meta.outputs.tags }}
+      build-args: ${{ inputs.BUILD_ARGS }}
       target: ${{ inputs.BUILD_TARGET }}
       push: true
       cache-from: |
